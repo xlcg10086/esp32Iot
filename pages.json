@@ -1,0 +1,65 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				// "navigationBarTitleText": "uni-app",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/bluetooth/bluetooth",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/about/about",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "ESP32小程序",
+		"navigationBarBackgroundColor": "#1976d2",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {},
+	"tabBar": {
+		"backgroundColor": "#F0F0F0",
+		"color": "#000000",
+		"selectedColor": "#0097D9",
+		"iconfontSrc": "static/icon/tabbaricon.ttf",
+		"list": [
+			{
+				"pagePath": "pages/bluetooth/bluetooth",
+				"text": "蓝牙控制",
+				"iconPath": "static/icon/蓝牙.png",
+				"selectedIconPath": "static/icon/蓝牙-copy.png",
+				"iconfont": {
+					"text": "\uec4c",
+					"color": "#000000",
+					"selectedColor": "#0097D9"
+				}
+			},
+			{
+				"pagePath": "pages/about/about",
+				"text": "关于我们",
+				"iconPath": "static/icon/icon_设置.png",
+				"selectedIconPath": "static/icon/icon_设置-copy.png",
+				"iconfont": {
+					"text": "\ueb8d",
+					"color": "#000000",
+					"selectedColor": "#0097D9"
+	
+				}
+			}
+		]
+	}
+}
