@@ -14,7 +14,8 @@
 			</view>
 		</view>
 		<view class="devicelist">
-			<view class="devicelist_list" v-for="(item,index) in deviceList" :key="item.id" @click="connectBluetooth(index)">
+			<view v-for="(item,index) in deviceList" :key="item.id" @click="connectBluetooth(index)"
+				:class="connectDeviceIndex === index ? 'devicelist_list_clicked' : 'devicelist_list'">
 				<view class="devicename">
 					<view class="box1" >
 						设备名称：
@@ -32,46 +33,68 @@
 					</view>
 				</view>		
 			</view>
+			<view class="statics">
+				{{`共计${deviceList.length}个设备`}}
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import BLE from "@/lib/BLE.js"
 	export default {
 		data() {
 			return {
 				title: '蓝牙连接',
 				content: '请打开蓝牙，连接蓝牙设备',
 				deviceList:[],
-				bluetooth: new BLE(),		
-				connectDeviceId:''
-				
+				connectDeviceIndex: null,
+				connectDeviceId: null,
+			}
+		},
+		computed:{
+			bluetooth(){
+				return this.$store.getters.getBluetoothInstance
 			}
 		},
 		onLoad() {
-
+			uni.authorize({
+			    scope: 'scope.userLocation',
+			})
 		},
 		methods: {
 			openBluetooth(){
-				if(!this.bluetooth.available){
-					this.bluetooth.openBluetoothAdapter().catch((e) => {
-					    uni.showToast({
-					        title:'蓝牙开启失败',
-					        icon: 'error'
-					    })
-					})
-				}	
+				uni.getLocation({
+					success:(res)=>{
+						if(!this.bluetooth.available){
+							this.bluetooth.openBluetoothAdapter().catch((e) => {
+							    uni.showToast({
+							        title:'蓝牙开启失败',
+							        icon: 'error'
+							    })
+							})
+						}
+					},
+					fail:(err)=>{
+						if(err.errCode == 2){
+							uni.showToast({
+								title:'请打开位置授权',
+								icon:'error'
+							})
+						}
+					},	
+				})				
 			},
+			
 			getBluetoothList(){
 				if (this.bluetooth.available) {
+					//注册回调函数
 					this.bluetooth.onDeviceFound = (newDevice) => {
 					  this.deviceList.push({
 						deviceid: newDevice.deviceId,
 						devicename: newDevice.localName
 					  });
 					};
-					this.bluetooth.searchDevices(5000)//搜索10s
+					this.bluetooth.searchDevices(10000)//搜索10s
 						.then((deviceList) => {
 						// 设备搜索完成
 							console.log('设备搜索完成', deviceList);
@@ -87,7 +110,9 @@
 						})
 					}
 			},
+			
 			connectBluetooth(index)	{
+				this.connectDeviceIndex = index
 				console.log(this.deviceList[index].deviceid)
 				this.connectDeviceId = `${this.deviceList[index].deviceid}`
 				if(!this.bluetooth.connected){
@@ -95,16 +120,15 @@
 					.then((res)=>{
 						console.log('createBLEConnection success')
 						console.log(res)
-						this.bluetooth.getBLEDeviceServices(this.connectDeviceId)
-						.then((res)=>{
-							console.log('getBLEDeviceServices success')
-							console.log(res)
-							uni.navigateTo({
-								url:`/pages/bluetooth/bluetooth?${index}`
-							})
-						})	
-						.catch((error)=>{
-							console.log(error)
+						this.$store.commit('setBluetoothName',this.deviceList[index].devicename)
+						uni.reLaunch({
+							url:'/pages/bluetooth/bluetooth',
+							success(res){
+								console.log('navigate ok')
+							},
+							fail(err){
+								console.log(err)
+							},
 						})
 					})
 					.catch((error)=>{
@@ -173,9 +197,23 @@
 	    padding: 10rpx; // Add padding as needed
 		width: 700rpx;
 		.devicelist_list {
-		  border-bottom: 1rpx solid #ccc; // Border between items
-		  margin-bottom: 10rpx; // Add margin between items
-		  padding-bottom: 10rpx; // Add padding between items
+			border-bottom: 1rpx solid #ccc; // Border between items
+			margin-bottom: 10rpx; // Add margin between items
+			padding-bottom: 10rpx; // Add padding between items
+		}
+		.devicelist_list_clicked{
+			border-bottom: 2rpx solid #ccc; // Border between items
+			box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1); // Shadow for a subtle effect
+			background-color: #bbb;
+			margin-bottom: 10rpx; // Add margin between items
+			padding-bottom: 10rpx; // Add padding between items	
+		}
+		.statics{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 20rpx;
+			color: #bbb;
 		}
 	}
 	

@@ -12,9 +12,11 @@ app.$mount()
 // #endif
 
 // #ifdef VUE3
+import store from './store'
 import { createSSRApp } from 'vue'
 export function createApp() {
   const app = createSSRApp(App)
+  app.use(store)
   return {
     app
   }

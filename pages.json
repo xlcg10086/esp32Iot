@@ -11,7 +11,7 @@
 			"path" : "pages/bluetooth/bluetooth",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "蓝牙控制",
 				"enablePullDownRefresh" : false
 			}
 		},
@@ -19,7 +19,7 @@
 			"path" : "pages/about/about",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "关于我们",
 				"enablePullDownRefresh" : false
 			}
 		}
